@@ -21,3 +21,37 @@ was finally able to fix target dir to start notebooks
     -near end of file there is a line like this: os.chdir(documents_folder)
     -commented it out, changed to os.chdir('E:\\git-repos\\deep-learning-tutorial\\notebooks')
     -yay it works now
+
+
+
+Image Classification
+-computer sees images as matrix of pixels with RGB values
+    -pixels_wide * pixels_tall * [R, G, B]
+        -RGB are color channel values, integer from 0 (black) to 255 (white)
+    -so basically, at pixel xy, the color is rbg
+        -3d array of brightness values  --->    image label
+-there are a lot of possible variations in how we perceive visual content
+    -viewpoint - orientation with respect to camera
+    -scale - size
+    -deformation - things can be deformed/look different than usual
+    -occlusion - parts may be hidden
+    -illumination - lights affect pixel brightness
+    -background clutter - object can blend into environment, harder to identify
+    -intra-class variation - cats look different but still cats
+-training dataset of labeled images
+    -n = num images, k = num classes
+
+-nearest neighbor classifier
+    -take test image, compare to all of training images, return label of closest training image
+        -L1 distance - the sum of the differences between all vectors in two matrices; absolute value
+        d1(I1,I2)=∑p|Ip1−Ip2|
+            -pretty crappy classifier, better than at random but not human quality
+        -L2 distance - euclidian distance between vectors, compute pixelwise differences, square them, then get sum, then get square root of sum
+        d2(I1,I2)= sqrt(∑p((Ip1−Ip2)**2))
+            -doesn't perform much better in image classification
+            -L2 metric is more harsh than L1
+
+-k-nearest neighbor classifier
+    -find top k closest images
+        -return most frequent label? not sure if it's a pure frequency count
+    -if k = 1, is basically just nearest neighbor
