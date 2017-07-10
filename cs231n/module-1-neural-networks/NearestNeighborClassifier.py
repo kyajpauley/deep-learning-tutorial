@@ -22,7 +22,7 @@ class NearestNeighbor(object):
             # find the nearest training image to the i'th test image
             # using the L1 distance (sum of absolute value differences)
             # distances = np.sum(np.abs(self.Xtr - X[i, :]), axis=1) # L1 distance = d1(I1,I2)=∑p|Ip1−Ip2|
-            distances = np.sqrt(np.sum(np.square(self.Xtr - X[i, :]), axis=1)) # L2 distance = d2(I1,I2)= sqrt(∑p(Ip1−Ip2)**2)
+            distances = np.sqrt(np.sum(np.square(self.Xtr - X[i, :]), axis=1)) # L2 distance = d2(I1,I2)= sqrt(∑p((Ip1−Ip2)**2)) euclidian distance
             min_index = np.argmin(distances)  # get the index with smallest distance
             Ypred[i] = self.ytr[min_index]  # predict the label of the nearest example
 
