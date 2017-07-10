@@ -2,3 +2,22 @@ http://cs231n.github.io/
 
 This is probably just going to be a notes file, will make directories as needed for organization
 
+Jupyter notebooks
+-trying to run notebooks in a directory other than the default directory is really annoying
+-was able to get it to run in repo notebooks directory with following command
+    jupyter notebook --notebook-dir=..\..\..\git-repos\deep-learning-tutorial\notebooks
+    -I don't know if that saved the default dir to there, will see next time start up
+-to run jupyter notebooks from winpython, go to winpython folder, click shortcut
+    -can also cd to file and run jupyter notebook from there
+
+-having problems getting kernels to connect while using winpython version
+    -location of notebooks dir doesn't seem to matter
+-retrying jupyter installation using anaconda
+    -was able to get kernel working
+    -have no idea how to get the notebook to start in preferred directory...
+
+was finally able to fix target dir to start notebooks
+    -open cwp.py file in anaconda directory
+    -near end of file there is a line like this: os.chdir(documents_folder)
+    -commented it out, changed to os.chdir('E:\\git-repos\\deep-learning-tutorial\\notebooks')
+    -yay it works now
