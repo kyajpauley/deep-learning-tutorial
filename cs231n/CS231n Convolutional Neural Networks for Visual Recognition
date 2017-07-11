@@ -63,9 +63,12 @@ Image Classification
     -if k = 1, is basically just nearest neighbor
     -can use for hyperparameter tweaking
         -determine what value of k (num nearest neighbors to compare for prediction) gets best accuracy
-        -k-fold cross validation
-            -if size of dataset is very small
-            -divide dataset into k pieces, choose 1 for validation, use rest for training
-                -iterate over all folds as validation, get eval, average performance across folds
-            -only works if dataset is small because otherwise time consuming and computationally expensive
-                -if size of validation set like 100-500 items
+
+-k-fold cross validation
+    -if size of dataset is very small
+    -divide dataset into k pieces, choose 1 for validation, use rest for training
+        -iterate over all folds as validation, get eval, average performance across folds
+        -only works if dataset is small because otherwise time consuming and computationally expensive
+            if size of validation set small enough to quickly train/test on
+                -for images probably 100-500 images
+                -small text lines - about 1m lines
