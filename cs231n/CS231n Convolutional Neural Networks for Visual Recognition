@@ -72,3 +72,13 @@ Image Classification
             if size of validation set small enough to quickly train/test on
                 -for images probably 100-500 images
                 -small text lines - about 1m lines
+
+Loss function
+-bias term is what prevents f(xi) = 0 for resulting algorithm, weight matrix in shape k * 1 (k = num classes)
+    -bias vector influences output scores for each class, but does not interact with data
+        f(xi,W,b)=Wxi+b = linear mapping
+        -basically prevents the classifier from being unable to make a decision on which class to pick, because each class has a bonus (can it have negative bonus?) probability of being the class
+    -can set a default bias of 1 so don't have to keep track of bias weights
+        -function becomes f(xi,W)=Wxi
+-loss function wants to minimize the differences between model's predictions and ground truth labels
+    -adjusts hyperparameters until highest accuracy parameters found
