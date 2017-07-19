@@ -32,7 +32,7 @@ def L_i_vectorized(x, y, W):
     delta = 1.0
     scores = W.dot(x)
     # compute the margins for all classes in one vector operation
-    margins = np.maximum(0, scores - scores[y] + delta)
+    margins = np.maximum(0, scores - scores[y] + delta) # Ly=max(0,s−sy+Δ)
     # on y-th position scores[y] - scores[y] canceled and gave delta. We want
     # to ignore the y-th position and only consider margin on max wrong class
     margins[y] = 0
