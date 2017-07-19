@@ -94,4 +94,27 @@ Loss function
             -sj = score of j-th class instance, predicted class score
             -Δ = its the fucking delta mate
         takes max between 0 or sum of difference between correct class score and predicted class score + delta
-            -if correct class, should have , should have significantly higher score
+            -if correct class, should have significantly higher, non-zero score
+                -how big are scores? integers or numbers smaller than one?
+            -zero threshold is called hinge loss
+                -standard version
+                -there's also squared hinge loss max(0,−)**2, penalizes violated margins more strongly
+
+    -Regularization penalty - if there are multiple possible values of W that correctly classify all examples, then they are all multiples of each other
+        -uniform changes in W weights; penalty for using anything besides smallest common denominator
+
+Delta
+-kind of pointless
+-can be set to 1 in pretty much all cases.
+-why even freaking have it.
+    -why.
+    -Δ
+    -apparently changing delta value just makes weights grow or shrink in weird ways, but is more regularization loss thing
+
+So if the bias terms can all be 1, and the delta can be 1, then what actually matters for scores...
+
+
+Softmax classifier
+-has different loss function than SVM
+-softmax is like logistic regression (which is inherently binary) but for multiple classes
+    -I fucking love logistic regressions mate
