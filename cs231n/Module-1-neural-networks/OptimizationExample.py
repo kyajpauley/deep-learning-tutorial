@@ -1,6 +1,7 @@
 import numpy as np
 from LossFunction import L
 
+#random search bad idea - option 1
 # assume X_train is the data where each column is an example (e.g. 3073 x 50,000)
 # assume Y_train are the labels (e.g. 1D array of 50,000)
 # assume the function L evaluates the loss function
@@ -26,3 +27,25 @@ for num in range(1000):
 # in attempt 5 the loss was 8.943151, best 8.857370
 # in attempt 6 the loss was 8.605604, best 8.605604
 # ... (trunctated: continues for 1000 lines)
+
+Wbest = bestloss
+
+# Assume X_test is [3073 x 10000], Y_test [10000 x 1]
+scores = Wbest.dot(Xte_cols) # 10 x 10000, the class scores for all test examples
+# find the index with max score in each column (the predicted class)
+Yte_predict = np.argmax(scores, axis = 0)
+# and calculate accuracy (fraction of predictions that are correct)
+np.mean(Yte_predict == Yte)
+# returns 0.1555
+
+# option 2 - random local search
+W = np.random.randn(10, 3073) * 0.001 # generate random starting W
+bestloss = float("inf")
+for i in range(1000):
+  step_size = 0.0001
+  Wtry = W + np.random.randn(10, 3073) * step_size
+  loss = L(Xtr_cols, Ytr, Wtry)
+  if loss < bestloss:
+    W = Wtry
+    bestloss = loss
+  print 'iter %d loss is %f' % (i, bestloss)
