@@ -73,6 +73,11 @@ Image Classification
                 -for images probably 100-500 images
                 -small text lines - about 1m lines
 
+parametric approach is superior to kNN classifier because once you have parameters, don't need to keep train set
+    -because not comparing test items to train items
+    -parametric approach smaller because only requires matrix multiplication with W
+        -W set during training, training data discard
+
 Bias term
 -bias term is what prevents f(xi) = 0 for resulting algorithm, weight matrix in shape k * 1 (k = num classes)
     -bias vector influences output scores for each class, but does not interact with data
@@ -116,6 +121,13 @@ So if the bias terms can all be 1, and the delta can be 1, then what actually ma
 
 Softmax classifier
 -has different loss function than SVM
+    -svm uses hinge loss, softmax uses cross entropy loss
+    -SVM scores are not easy to interpret (uncalibrated)
+        -softmax scores can be used to compute probabilities of classes
+            -because returns unnormalized log probabilities for each class
+            -lambda value determines how regularized probs are
+-softmax = normalization function
+    -transform raw vectors into normalized positive values that sum to one so that cross entropy loss can be applied
 -softmax is like logistic regression (which is inherently binary) but for multiple classes
     -I fucking love logistic regressions mate
 -softmax classifier returns class scores that are the unnormalized log probabilities of the class
