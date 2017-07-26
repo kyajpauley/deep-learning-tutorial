@@ -118,3 +118,33 @@ Softmax classifier
 -has different loss function than SVM
 -softmax is like logistic regression (which is inherently binary) but for multiple classes
     -I fucking love logistic regressions mate
+-softmax classifier returns class scores that are the unnormalized log probabilities of the class
+    -hinge loss replaced by cross entropy loss
+        -cross entropy function
+            H(p,q)=−∑xp(x)logq(x)
+                -cross entropy between 'true' (gold) distribution p and estimated distrbution q
+    -different from SVM where scores are more or less random
+    Li = −log((efyi)/(∑jefj)) or equivalently Li = −fyi + log∑jefj
+        -softmax function
+        -transform vector of arbitrary real valued scores (z) to vector of values between zero and one, sum of vector values is one
+-softmax classifier minimalizes cross entropy between estimated class probs and true class probs
+    -mimimizing the negative log likelihood of the correct class
+        -maximum likelihood estimation
+        -regularization term R(w) = gaussian prior W
+-softmax numeric stability
+    -multiply function by constant C, push to sum
+        ((efyi)/(∑jefj)) = ((Cefyi)/(C∑jefj)) = ((efyi + logC)/(∑jefj + logC))
+    -can choose any value of C, will not change results but will improve numeric stability of function
+    -common C value
+        logC = −maxjfj
+        -basically means shift values inside vector f so that highest value is zero
+
+        f = np.array([123, 456, 789]) # example with 3 classes and each having large scores
+        p = np.exp(f) / np.sum(np.exp(f)) # Bad: Numeric problem, potential blowup
+
+        # instead: first shift the values of f so that the highest number is 0:
+        f -= np.max(f) # f becomes [-666, -333, 0]
+        p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
+
+
+
