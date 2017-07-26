@@ -178,3 +178,42 @@ How to optimize W?
             -gradient = vector of slopes (derivatives) for each dimension in input space
             -gradient is vector of partial derivatives in each dimension
 
+think of loss function as high-dimensional optimization landscape
+    -you are trying to get to the bottom as quickly as possible, but with a blindfold on
+    -optimize loss function via iterative refinement
+        -start with random set of weights, refine them step by step until loss is minimized
+            -sounds like it could be computationally expensive
+    -gradient of function gives steepest ascent direction
+        -loss function wants to find gradients with least loss
+    -parameter update has step size (learning rate, probably is alpha)
+        -you can play with alpha in a lot of cases
+            -controlled alpha decay
+    -numerical vs analytic gradient
+        -numerical gradient
+            -simple, but imprecise and computationally expensive
+        -analytic gradient
+            -precise, fast to compute, more error prone because requires derivation of gradient math (more tricky to implement)
+                -in practice always use analytic gradient then do gradient check
+                    -implementation is compared to numerical gradient
+    -gradient descent algorithm
+        # Vanilla Gradient Descent
+        while True:
+            weights_grad = evaluate_gradient(loss_fun, data, weights)
+            weights += - step_size * weights_grad # perform parameter update
+        -most common way of optimizing neural network loss functions
+    -mini batch gradient descent
+        -large training sets have lots of examples, don't run loss over full set for single parameter update (computationally expensive)
+            -instead use small batch (256 examples) to calculate loss
+        # Vanilla Minibatch Gradient Descent
+        while True:
+            data_batch = sample_training_data(data, 256) # sample 256 examples
+            weights_grad = evaluate_gradient(loss_fun, data_batch, weights)
+            weights += - step_size * weights_grad # perform parameter update
+        -assumes that training samples are related
+            -in practice not really a thing
+            -could have multiple batches to consider
+        -stocastic gradient descent (online gradient descent)
+            -extreme version of mini batch containing only a single example that is evaluated
+            -less common due to vectorized code optimizations making it more efficient to test on larger batch sizes (100+ examples)
+                -people usually use term stochastic gradient descent to refer to this size more often than single sample size
+                    -rarely see minibatch gradient descent term used, SGD is more colloquial
