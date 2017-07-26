@@ -1,7 +1,7 @@
 import numpy as np
 from LossFunction import L
 
-#random search bad idea - option 1
+# random search bad idea - option 1
 # assume X_train is the data where each column is an example (e.g. 3073 x 50,000)
 # assume Y_train are the labels (e.g. 1D array of 50,000)
 # assume the function L evaluates the loss function
@@ -9,14 +9,14 @@ from LossFunction import L
 X_train = [['data'] * 3073] * 50000
 Y_train = ['label'] * 50000
 
-bestloss = float("inf") # Python assigns the highest possible float value
+bestloss = float("inf")  # Python assigns the highest possible float value
 for num in range(1000):
-  W = np.random.randn(10, 3073) * 0.0001 # generate random parameters
-  loss = L(X_train, Y_train, W) # get the loss over the entire training set
-  if loss < bestloss: # keep track of the best solution
-    bestloss = loss
-    bestW = W
-  print('in attempt %d the loss was %f, best %f' % (num, loss, bestloss))
+    W = np.random.randn(10, 3073) * 0.0001  # generate random parameters
+    loss = L(X_train, Y_train, W)  # get the loss over the entire training set
+    if loss < bestloss:  # keep track of the best solution
+        bestloss = loss
+        bestW = W
+    print('in attempt %d the loss was %f, best %f' % (num, loss, bestloss))
 
 # prints:
 # in attempt 0 the loss was 9.401632, best 9.401632
@@ -39,9 +39,9 @@ Xte_cols = X_test['columns']  # mmm test columns
 Yte = 'Y testing labels'
 
 # Assume X_test is [3073 x 10000], Y_test [10000 x 1]
-scores = Wbest.dot(Xte_cols) # 10 x 10000, the class scores for all test examples
+scores = Wbest.dot(Xte_cols)  # 10 x 10000, the class scores for all test examples
 # find the index with max score in each column (the predicted class)
-Yte_predict = np.argmax(scores, axis = 0)
+Yte_predict = np.argmax(scores, axis=0)
 # and calculate accuracy (fraction of predictions that are correct)
 np.mean(Yte_predict == Yte)
 # returns 0.1555
@@ -50,13 +50,13 @@ np.mean(Yte_predict == Yte)
 Xtr_cols = X_train['columns']  # pick some random values
 Ytr = 'Y training labels'
 
-W = np.random.randn(10, 3073) * 0.001 # generate random starting W
+W = np.random.randn(10, 3073) * 0.001  # generate random starting W
 bestloss = float("inf")
 for i in range(1000):
-  step_size = 0.0001
-  Wtry = W + np.random.randn(10, 3073) * step_size
-  loss = L(Xtr_cols, Ytr, Wtry)
-  if loss < bestloss:
-    W = Wtry
-    bestloss = loss
-  print('iter %d loss is %f' % (i, bestloss))
+    step_size = 0.0001
+    Wtry = W + np.random.randn(10, 3073) * step_size
+    loss = L(Xtr_cols, Ytr, Wtry)
+    if loss < bestloss:
+        W = Wtry
+        bestloss = loss
+    print('iter %d loss is %f' % (i, bestloss))
