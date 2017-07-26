@@ -122,3 +122,16 @@ for step_size_log in [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1]:
     # for step size 1.000000e-03 new loss: 254.086573
     # for step size 1.000000e-02 new loss: 2539.370888
     # for step size 1.000000e-01 new loss: 25392.214036
+
+# Vanilla Gradient Descent
+
+while True:
+    weights_grad = evaluate_gradient(loss_fun, data, weights)
+    weights += - step_size * weights_grad  # perform parameter update
+
+# Vanilla Minibatch Gradient Descent
+
+while True:
+    data_batch = sample_training_data(data, 256)  # sample 256 examples
+    weights_grad = evaluate_gradient(loss_fun, data_batch, weights)
+    weights += - step_size * weights_grad  # perform parameter update
