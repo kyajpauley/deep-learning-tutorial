@@ -30,6 +30,14 @@ for num in range(1000):
 
 Wbest = bestloss
 
+X_test = 'matrix with test values in it'
+Xte_cols = X_test['columns']  # mmm test columns
+# this isn't a real bit of code, it's just notes
+# this entire goddamn file is notes
+# ffs
+# I'm just cleaning it up because otherwise pycharm gives me stupid red lines
+Yte = 'Y testing labels'
+
 # Assume X_test is [3073 x 10000], Y_test [10000 x 1]
 scores = Wbest.dot(Xte_cols) # 10 x 10000, the class scores for all test examples
 # find the index with max score in each column (the predicted class)
@@ -39,6 +47,9 @@ np.mean(Yte_predict == Yte)
 # returns 0.1555
 
 # option 2 - random local search
+Xtr_cols = X_train['columns']  # pick some random values
+Ytr = 'Y training labels'
+
 W = np.random.randn(10, 3073) * 0.001 # generate random starting W
 bestloss = float("inf")
 for i in range(1000):
@@ -48,4 +59,4 @@ for i in range(1000):
   if loss < bestloss:
     W = Wtry
     bestloss = loss
-  print 'iter %d loss is %f' % (i, bestloss)
+  print('iter %d loss is %f' % (i, bestloss))
