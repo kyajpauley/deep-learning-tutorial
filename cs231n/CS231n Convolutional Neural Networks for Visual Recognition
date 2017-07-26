@@ -162,5 +162,19 @@ Softmax classifier
 
 -------------------------
 
+How to optimize W?
 
+-option 1 - pick random W values, test and see which ones work best
+    -this is shitty
+    -trying to randomly guess best possible set of W is dumb, better off taking an existing set of W and refining it during testing
+-option 2 - random local search
+    -start out with random W, change values randomly, test loss, if smaller make adjustment
+    -this works okay, slightly better than option 1, but is still wasteful and computationally expensive
+-option 3 - gradient
+    -instead of picking random values to test a direction, compute best direction for weight changes
+    -gradient loss function!
+    -slope = instantaneous rate of change of the function at a given point, one dimensional function
+        -gradient = slope for multidimensional vectors
+            -gradient = vector of slopes (derivatives) for each dimension in input space
+            -gradient is vector of partial derivatives in each dimension
 
