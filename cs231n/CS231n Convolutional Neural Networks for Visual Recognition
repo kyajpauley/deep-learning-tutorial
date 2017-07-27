@@ -217,3 +217,26 @@ think of loss function as high-dimensional optimization landscape
             -less common due to vectorized code optimizations making it more efficient to test on larger batch sizes (100+ examples)
                 -people usually use term stochastic gradient descent to refer to this size more often than single sample size
                     -rarely see minibatch gradient descent term used, SGD is more colloquial
+
+-------------------------
+
+Backpropagation
+    -compute gradients through recursive application of chain rule
+    -important for neural networks
+
+given f(x), x is input vector
+    -compute gradient of f at x
+        -relevant for loss function!
+            -f = loss function
+            -x = training data + neural network weights
+        -ultimately backpropagation + loss function calculation is used to perform parameter updates
+            -you can still use it on its own for visualization if you wanted
+    -when computing gradient, computing partial derivatives
+        -the rate of change of a function with respect to that variable
+        -given f(x,y) = xy
+            f = xy
+            f/y = x --> ∂f/∂y = x
+            f/x = y --> ∂f/∂x = y
+            -is basically just algebra but there's an extra stupid derivative symbol thing making it look complicated
+                -you can think of it as x is defined as the change in f over the change in y
+                -or like any other math function... like pressure and volume and temperature, if you change any value the other values have to change too
