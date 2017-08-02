@@ -270,3 +270,10 @@ Compound Expressions with Chain Rule
     -∂f/∂x = (∂f/∂q)(∂q/∂x)
     -it sounds complicated but it really isn't
         -shit ends up being multiplied by 1 so it's okay
+
+sigmoid function
+σ(x) = 1/(1 + e**−x) ---> (1 − σ(x))σ(x)
+-full version:
+    σ(x) = 1/(1+e**−x) ---> (dσ(x)/dx) = e**−x(1 + e**−x)**2 = ((1 + e***−x − 1)/(1 + e**−x))(1/(1 + e**−x)) = (1 − σ(x))σ(x)
+-sigmoid function is popular because its derivation is really simple
+
