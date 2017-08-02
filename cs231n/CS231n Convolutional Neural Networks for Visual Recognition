@@ -261,8 +261,13 @@ given f(x), x is input vector
                     -the subgradient is 1 for the larger input and 0 for the other(s)
 
 Compound Expressions with Chain Rule
--complicated expressions can be broken down into smaller expressions (multiplication, addition or max)
     -f(x,y,z)=(x+y)z ---> q=x+y and f=qz
+-complicated expressions can be broken down into smaller expressions
+    -multiplication, addition, max
+    -multi:     f=xy ---> ∂f/∂x = y and ∂f/∂y = x
+    -add:       f=x+y ---> ∂f/∂x = 1 and ∂f/∂y = 1
+    -max:       f=max(x,y) ---> ∂f/∂x = 1(when x > y) and ∂f/∂y = 1(when y > x)
+    -           f=1/x ---> ∂f/∂x = -1/x**2
 -can compute derivatives for simpler functions seperately
     -  f=qz --->  ∂f/∂q=z and ∂f/∂z=q
     -  q=x+y --->  ∂q/∂x=1 and ∂q/∂y=1
