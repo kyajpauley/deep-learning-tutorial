@@ -271,13 +271,77 @@ Compound Expressions with Chain Rule
     -it sounds complicated but it really isn't
         -shit ends up being multiplied by 1 so it's okay
 
-sigmoid function
+sigmoid function - σ(x)
+-σ(x) this thing means sigmoid. if you see it as part of a function, it means sigmoid. dammit.
 σ(x) = 1/(1 + e**−x) ---> (1 − σ(x)) * σ(x)
 -full version:
     σ(x) = 1/(1+e**−x) ---> (dσ(x)/dx) = e**−x(1 + e**−x)**2 = ((1 + e***−x − 1)/(1 + e**−x)) * (1/(1 + e**−x)) = (1 − σ(x)) * σ(x)
 -sigmoid function is popular because its derivation is really simple
+-common choice for activation function of neural net
+    -neurons fire, when they fire isn't important, but how often they fire is
+        -rate code
+        -model this firing rate with activation function f
+        -sometimes firing timing is important for biological systems
+-sigmoid function squishes larger numbers into a range between 0 and 1
 
 staged backpropagation
 -important to implement forward pass (main function) into simpler stages that are easy to backpropagate through
     -simpler functions have simpler derivations
     -you can use intermediate variables to compute
+
+-------------------------
+
+neurons
+-lots of different types of neurons
+-do function with input and weights, add bias and apply non-linearity (activation) function
+    -sigmoid is common activation function
+-single neuron classifier can behave like linear classifier with appropriate loss function
+    -binary softmax classifier
+        -probability of two classes must equal to 1
+            -calculate cross entropy loss
+            -prediction of classifier is based on whether the output of the neuron is greater than 0.5
+                -due to sigmoid activation forcing values to be between 0 and 1
+    -binary SVM classifier
+        -max-marging loss function applied to output
+    -regularization interpretation
+        -regularization loss in SVM/softmax cases is analogous to gradual forgetting (biological)
+        -drive all synaptic weights w toward zero after every parameter update
+-commonly used activation functions
+    -sigmoid
+        -take real valued number, squish to range between 0 and 1
+        -good interpretation of firing rate of neuron
+            -either 0 or 1, not firing or fully saturated firing at max frequency (full binary, all or nothing)
+        -recently unpopular
+            -sigmoids saturate and kill gradients
+                -if all values either 0 or 1, then all gradients in region are almost zero
+                    -during backpropagation, local gradient is multiplied to entire function
+                        -since basically 0, makes response also basically 0
+                            -no signal flows from neuron to its weights or data
+                            -so no updates to weights
+                -if initial weights too large, most neurons in network will be oversaturated and not updated
+            -sigmoid outputs not zero centered
+                -sigmoid can only return positive values between 0 and 1
+                -undesireable because later layers in the neural network would receive either all pos or all neg values (if gradient for whole expression is neg)
+                -the final updates for the weights can have variable signs, and all batch gradients are added up at the end
+                    -so not as bad as oversaturation
+    -tanh
+        - tanh(x) = 2σ(2x) − 1
+        -take real valued number, squish to range between -1 and 1
+            -activations saturate either 1 or -1, but the output is zero-centered since can be either pos or neg
+                -therefore preferred over sigmoid
+    -reLU
+        -rectified linear unit
+        - f(x) = max(0, x)
+            -activation is thresholded at 0
+        -pros
+            -greatly accelerate convergence of stochastic gradient descent compared to sigmoid/tanh
+                -due to being linear and non-saturating
+            -isn't as computationally expensive as sigmoid/tanh because no exponents
+            -easily implemented by thresholding a matrix of activations at zero (no neg values allowed)
+        -cons
+            -fragile during training
+            -large gradient can cause weights to update in such a way that the neuron never activates again
+                -from that point on, all gradient from that point is 0
+            -reLU units can irreversibly die during training since can be knocked off data manifold
+                -usually happens if learning rate is set too high
+                    -not as much of an issue with a good alpha
