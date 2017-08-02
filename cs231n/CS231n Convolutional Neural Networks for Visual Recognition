@@ -272,8 +272,12 @@ Compound Expressions with Chain Rule
         -shit ends up being multiplied by 1 so it's okay
 
 sigmoid function
-σ(x) = 1/(1 + e**−x) ---> (1 − σ(x))σ(x)
+σ(x) = 1/(1 + e**−x) ---> (1 − σ(x)) * σ(x)
 -full version:
-    σ(x) = 1/(1+e**−x) ---> (dσ(x)/dx) = e**−x(1 + e**−x)**2 = ((1 + e***−x − 1)/(1 + e**−x))(1/(1 + e**−x)) = (1 − σ(x))σ(x)
+    σ(x) = 1/(1+e**−x) ---> (dσ(x)/dx) = e**−x(1 + e**−x)**2 = ((1 + e***−x − 1)/(1 + e**−x)) * (1/(1 + e**−x)) = (1 − σ(x)) * σ(x)
 -sigmoid function is popular because its derivation is really simple
 
+staged backpropagation
+-important to implement forward pass (main function) into simpler stages that are easy to backpropagate through
+    -simpler functions have simpler derivations
+    -you can use intermediate variables to compute
