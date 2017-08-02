@@ -240,3 +240,33 @@ given f(x), x is input vector
             -is basically just algebra but there's an extra stupid derivative symbol thing making it look complicated
                 -you can think of it as x is defined as the change in f over the change in y
                 -or like any other math function... like pressure and volume and temperature, if you change any value the other values have to change too
+            -calculating the derivative of a variable allows you to see how sensitive the function is with respect to that variable
+                -multiplication
+                    -f(x,y) = xy, x = 4 and y = -3
+                        -f(x,y) = 12
+                        -derivative of x = -3
+                            -therefore, if increase value of x by tiny amount, the value of the entire expression decreases by 3 times that amount
+                        -derivative of y = 4
+                            -so, if increase y a tiny amount, entire function increased by 4 times that amount
+                        -the derivative of y is x, the derivative of x is y
+                -addition
+                    -f(x,y) = x + y
+                    -the derivative of both x and y is 1
+                        -because addition
+                        -if increase either variable, f increases by same amount
+                -max operation
+                    -f(x,y) = max(x,y)
+                    -when x > y, ∂f/∂x = 1, else 0
+                    -when y > x, ∂f/∂y = 1, else 0
+                    -the subgradient is 1 for the larger input and 0 for the other(s)
+
+Compound Expressions with Chain Rule
+-complicated expressions can be broken down into smaller expressions (multiplication, addition or max)
+    -f(x,y,z)=(x+y)z ---> q=x+y and f=qz
+-can compute derivatives for simpler functions seperately
+    -  f=qz --->  ∂f/∂q=z and ∂f/∂z=q
+    -  q=x+y --->  ∂q/∂x=1 and ∂q/∂y=1
+-chain rule: recombine derivatives of smaller expressions through multiplication
+    -∂f/∂x = (∂f/∂q)(∂q/∂x)
+    -it sounds complicated but it really isn't
+        -shit ends up being multiplied by 1 so it's okay
