@@ -345,3 +345,5 @@ neurons
             -reLU units can irreversibly die during training since can be knocked off data manifold
                 -usually happens if learning rate is set too high
                     -not as much of an issue with a good alpha
+    -leaky reLU
+        -tries to fix issue of everything negative going to 0, by instead making it go to 0.1
