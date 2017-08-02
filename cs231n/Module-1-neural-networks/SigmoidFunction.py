@@ -2,7 +2,8 @@ w = [2,-3,-3] # assume some random weights and data
 x = [-1, -2]
 
 # forward pass
-dot = w[0]*x[0] + w[1]*x[1] + w[2]
+dot = w[0]*x[0] + w[1]*x[1] + w[2]  # this is a really weird way to get the dot product of something, but it
+                                    # at least shows the math?
 f = 1.0 / (1 + math.exp(-dot)) # sigmoid function
 
 # backward pass through the neuron (backpropagation)
