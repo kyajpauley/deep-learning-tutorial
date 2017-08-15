@@ -345,5 +345,21 @@ neurons
             -reLU units can irreversibly die during training since can be knocked off data manifold
                 -usually happens if learning rate is set too high
                     -not as much of an issue with a good alpha
+        -should default to this neuron type, just be careful of learning rates and the possiblity of dead units
     -leaky reLU
-        -tries to fix issue of everything negative going to 0, by instead making it go to 0.1
+        -tries to fix issue of everything negative going to 0, by instead making it go to -0.01
+            -small constant a = slope
+            f(x) = 1(x < 0)(αx) + 1(x > = 0)(x)
+            -sort of kind of like a smoothing algorithm
+    -maxout
+        -generalizes reLU and leaky version
+        -max(wT1x + b1, wT2x + b2)
+            -reLU and leaky reLU are special versions of this form
+                -reLU, w1 and b1 = 0
+            -no saturation, linear regime of operation
+            -no dying units to worry about
+    -summary
+        -sigmoid sucks, don't use it
+        -reLU is best, be careful of alpha and monitor for dying units
+            -if having problems, try leaky reLU or maxout
+            -can also try tanh, but it doesn't perform as well as reLU/maxout
