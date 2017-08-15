@@ -357,6 +357,7 @@ neurons
             f(x) = 1(x < 0)(αx) + 1(x > = 0)(x)
             -sort of kind of like a smoothing algorithm
     -maxout
+        -does not have functional form where linearity is applied on dot product between weights and data
         -generalizes reLU and leaky version
         -max(wT1x + b1, wT2x + b2)
             -reLU and leaky reLU are special versions of this form
@@ -368,3 +369,31 @@ neurons
         -reLU is best, be careful of alpha and monitor for dying units
             -if having problems, try leaky reLU or maxout
             -can also try tanh, but it doesn't perform as well as reLU/maxout
+
+neural network architectures + organization
+-neurons in graphs
+    -modeled as collections of neurons connected in acyclic graph
+        -outputs of some neurons are inputs of other neurons
+        -acyclic to avoid infinite loop
+    -distinct layers of neurons
+        -fully-connected layer
+            -most common layer type
+            -neurons between adjacent layers are fully pairwise connected, but neurons within single layer are unconnected
+            to each other
+                -neurons in the same layer do not have connections to each other, but have connections with neurons from other layers
+-naming conventions
+    -N-layer neural network
+    -don't count the input layer in N
+        -so single-layer = no hidden layers
+            -input mapped directly to output
+            -SVMs are special type of this
+            -artificial neural networks (ANN), multilayer perceptrons (MLP)
+    -neurons sometimes called units
+-output layer
+    -output layer neurons commonly do not have activation function
+        -have linear identity activation function (technically)
+    -output layer usually = class scores (classification), or real-valued target (regression)
+-size
+    -number of neurons, or number of parameters
+    -convolutional neural networks tend to have 100+ parameters and 10-20 layers
+        -number of effective connections is much greater due to parameter sharing
