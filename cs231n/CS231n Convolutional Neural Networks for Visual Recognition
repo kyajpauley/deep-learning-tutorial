@@ -397,3 +397,54 @@ neural network architectures + organization
     -number of neurons, or number of parameters
     -convolutional neural networks tend to have 100+ parameters and 10-20 layers
         -number of effective connections is much greater due to parameter sharing
+
+feed forward computation
+-repeated matrix multiplication + interwoven activation function
+    -if 3 layer network:
+        - I  H  H
+          I  H  H  O
+          I  H  H
+             H  H
+        -3 matrices, one for each layer (1 input + 2 hidden)
+            -hidden layer weights W + biases b
+    -use matrix vector multiplication (dot product) to combine layers, add bias, then apply activation function
+
+# forward-pass of a 3-layer neural network:
+f = lambda x: 1.0/(1.0 + np.exp(-x)) # activation function (use sigmoid)
+x = np.random.randn(3, 1) # random input vector of three numbers (3x1)
+h1 = f(np.dot(W1, x) + b1) # calculate first hidden layer activations (4x1)
+h2 = f(np.dot(W2, h1) + b2) # calculate second hidden layer activations (4x1)
+out = np.dot(W3, h2) + b3 # output neuron (1x1)
+
+representational power
+-group of functions parameterized by the weights of the network
+-universal approximator
+    -for any continuous function and set of data, there exists some neural network with at least one hidden layer that approximates it
+-usually 3 layer networks will outperform 2 layer networks
+    -larger networks (4, 5, 6 layers) give diminishing returns in performance
+        -opposite of convolutional networks, where more depth = better
+            -mostly due to image classification, images are made up of composite parts so it makes sense to have more layers
+            to represent those parts
+
+number of layers + size of layers
+-capacity of network increases as size increases
+    -neural networks with more neurons can express more complicated functions
+        -beware overfitting
+            -fitting noise as well as data, doesn't allow for generalization
+            -can decrease number of neurons to prevent overfitting
+                -but there are better ways to control overfitting that should be tried first
+                    -l2 regularization, dropout, input noise, etc.
+                    -smaller networks are harder to train with gradient descent
+                        -loss functions have relatively few local minima that are easier to converge to and lead to higher loss
+                    -bigger networks have more local minima (but perform better in loss functions due to this)
+                        -relies a lot less on luck of random initialization
+                        -more paths to take through neural net, all relatively equally likely, so less chance of bad minima
+-regularization strength is best way to control overfitting
+    -lambda value
+        -affects weight decay
+    -smaller lambda (0.001 vs 0.1) is less regularized (more overfitting), while larger value is smoother edges
+
+-------------------------
+
+data and model (loss) set up
+
