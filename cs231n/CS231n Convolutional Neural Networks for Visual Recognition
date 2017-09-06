@@ -507,8 +507,6 @@ preprocessing
                         -it basically looks like a negative of the pca version, where all the fine details that were
                          removed are now visible
 
-
-
 # Assume input data matrix X of size [N x D]
 X -= np.mean(X, axis = 0) # zero-center the data (important)
 cov = np.dot(X.T, X) / X.shape[0] # get the data covariance matrix
@@ -518,3 +516,46 @@ Xrot_reduced = np.dot(X, U[:,:100]) # Xrot_reduced becomes [N x 100] pca
 # whiten the data:
 # divide by the eigenvalues (which are square roots of the singular values)
 Xwhite = Xrot / np.sqrt(S + 1e-5)
+
+
+weight initialization
+-do not set all initial weights to zero!
+    -there is no asymmetry in neurons if their weights are initialized to be the same
+-use small random numbers
+    -symmetry breaking
+        -neurons should be unique from each other so that any updates and correlations are deliberate rather than
+        being due to previous neuron similarity
+    -example: W = 0.01* np.random.randn(D,H)
+        -standard deviation guassian distribution
+            -recommended over using numbers drawn from uniform distribution, but has relatively little impact on final
+            performance
+    -don't use all smaller numbers
+        -if weights are too small, can lead to very small gradients, which can diminish gradient signal and cause problems
+        for larger networks
+-normalize variance of each neuron
+    -without normalization, variance grows by number of inputs (since they're all different and random)
+    -scale weight vector by square root of num inputs
+        w = np.random.randn(n) / sqrt(n)
+            -if using ReLU units, use this instead
+                w = np.random.randn(n) * sqrt(2.0/n)
+    -ensures that all neurons wil have same output distribution
+    -improves rate of convergence
+-sparse initialization
+    -could instead set all neuron weights to zero, but give them random connections to a fixed number of neurons below it
+        -usually no smaller than 10
+            -bigger networks
+-bias initialization
+    -can set to 0
+    -can use small constant 0.01 for ReLU nonlinearities
+        -ensures all ReLU units fire in the beginning
+            -don't really *have* to, might be detrimental
+-best practices:
+    -ReLU units + w = np.random.randn(n) * sqrt(2.0/n) to initialize neuron weights
+-batch normalization
+    -common in neural networks
+    -force activations to initialize with guassian distribution
+        -sort of like doing preprocessing at every layer of network, but part of the network itself (rather than just the
+        data)
+
+
+regularization
