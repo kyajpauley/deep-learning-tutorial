@@ -447,4 +447,74 @@ number of layers + size of layers
 -------------------------
 
 data and model (loss) set up
+-neural networks perform a sequence of linear mappings interwoven with non-linear activation functions
 
+preprocessing
+-neural network takes matrix X as input
+    -X is of size [N x D]
+        -N = num samples
+        -D = num dimensions
+-common preprocessing techniques:
+    -mean subtraction
+        -subtract mean across every individual feature in data
+            -centers cloud of data around the origin in every dimension (moves all values closer to 0)
+        X -= np.mean(X, axis = 0)
+            -can use X -= np.mean(X) to subtract a single value from all features
+    -normalization
+        -normalize data dimensions to be roughly the same scale
+            -zero-center data, then divide each dimension by its standard deviation
+                X /= np.std(X, axis = 0)
+            -or
+            -squish data to fit between -1 and 1
+                -use this if input features have different scales but of are approximately equal importance to learning
+                algorithm
+                    -don't need to do this for images, since rbg color channels are all 0-255
+    -pca and whitening
+        -center data (subtract mean)
+        -compute covariance matrix to find correlation structure in the data
+            -diagonal of this matrix has variances
+            -covariance matrix is symmetric and positive semi-definite
+                -positive semi-definite = value is positive for every non-zero column vector, can have 0 values
+        -compute SVD factorization of data covariance matrix
+            -U = eigenvectors
+                -columns are a set of orthonormal vectors
+                    -norm of 1, orthogonal to each other
+                        -a vector that when operated on by a given operator gives a scalar multiple of itself
+                    -basis vector
+            -S = 1-D array of singular values
+        -decorrelate data by projecting original (zero-centered) data into eigenbasis
+            -corresponds to rotation of the data in X so that new axes are the eigenvectors
+                -covariance matrix of Xrot is now diagonal
+            -np.lingalg.svd returns U values with eigenvector columns sorted by eigenvalues
+                -can use to reduce dimensionality of data using only the top few eigenvectors
+                    -scale down by dividing data by largest scales
+                    -discard dimensions where the data has no variance ---> pca
+                    -top eigenvectors capture the lower frequencies in the image
+        -PCA = principal component analysis dimensionality reduction
+            -reduce original dataset of size N x D to N x 100 (or however many eigenvectors you choose to keep)
+            -re-express the image with a smaller dimensional matrix
+                -loses fine detail, makes image more blurry but most information preserved
+                    -removes nonessential elements
+        -whitening
+            -takes data on eigenbasis and divides every dimension by the eigenvalue to normalize the scale
+                -all values are scaled by square root
+                -add small constant to prevent division by zero (1e-5)
+                    -can exaggerate noise in data because stretches all dimensions to be of equal size in input
+                        -can be mitigated by stronger smoothing - increasing the constant to larger number
+                -squishes variance along all eigenvalues to equal length
+                    -lower frequencies (most variance) are now negligible
+                    -high frequencies (least variance) are exaggerated
+                        -it basically looks like a negative of the pca version, where all the fine details that were
+                         removed are now visible
+
+
+
+# Assume input data matrix X of size [N x D]
+X -= np.mean(X, axis = 0) # zero-center the data (important)
+cov = np.dot(X.T, X) / X.shape[0] # get the data covariance matrix
+U,S,V = np.linalg.svd(cov)
+Xrot = np.dot(X, U) # decorrelate the data
+Xrot_reduced = np.dot(X, U[:,:100]) # Xrot_reduced becomes [N x 100] pca
+# whiten the data:
+# divide by the eigenvalues (which are square roots of the singular values)
+Xwhite = Xrot / np.sqrt(S + 1e-5)
