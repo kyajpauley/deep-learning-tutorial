@@ -7,7 +7,9 @@ p = 0.5  # probability of keeping a unit active. higher = less dropout
 
 def train_step(X):
     """ X contains the data """
-
+    '''
+    -dropout is performed for each hidden layer (twice in example)
+    '''
     # forward pass for example 3-layer neural network
     H1 = np.maximum(0, np.dot(W1, X) + b1)
     U1 = np.random.rand(*H1.shape) < p  # first dropout mask
