@@ -559,3 +559,62 @@ weight initialization
 
 
 regularization
+-prevent overfitting!
+-L2 regularization
+    -penalize squared magnitude of all parameters
+    -for every weight w in network, add 1/2λw**2
+        -λ (lambda) is regularization strength
+        -use 1/2 because it makes the gradient λw instead of 2λw
+    -linear decay
+        W += -lambda * W
+    -final weight vectors are diffuse small numbers
+    -usually superior performance over L1
+-L1 regularization
+    -for every weight w in network, add λ∣w∣
+    -elastic net regularization
+        -combine L2 and L1
+        λ1∣w∣+λ2w**2
+            -I think there's two different values λ1 and λ2
+    -weight vectors become sparse during optimization
+        -neurons use only sparse subset of most important inputs
+            -reduce noise
+-max norm constraints
+    -enforce upper limit on magnitude of weight vector for every neuron
+        -use projected gradient descent to enforce constraint
+    -perform parameter update as normal, then enforce constraint
+        -make sure output is less than c
+            -c is usually 3 or 4
+    -prevents network from "exploding" if learning rates are set too high
+-dropout
+    -hyperparameter p = probability
+    -neuron is only active within that probability, otherwise zero
+    -sample a neural network within a larger neural network (pick some neurons)
+        -only update the sample neurons based on input data
+            -don't do dropout during testing
+        -sub-networks?
+    -perform dropout for each hidden layer
+        -can also do for input layer, need binary mask for input X
+    -during prediction, scale hidden layer output by p
+        -necessary in order to have the same output during training
+    -better to use inverted dropout
+        -perform p scaling during training so not needed during testing
+    -introduces stochastic gradient behaviour in forward pass of network
+        -noise marginalized over analytically
+            -multiplying by p
+        -or numerically
+            -sampling
+                -pick samples, perform several forward passes and average results
+    -DropConnect
+        -random set of weights set to zero during forward pass
+            -instead of turning of neurons, turn off random weights instead
+-bias
+    -rare to regularize bias because doesn't interact with data multiplicatively
+    -still can manipulate if desired to reduce loss
+-can also regularize individual layers
+    -no one really does this
+-best practices
+    -L2 regularization, do cross validation to find best lambda value
+    -also do dropout for all layers
+        p = 0.5
+            -good default
+
