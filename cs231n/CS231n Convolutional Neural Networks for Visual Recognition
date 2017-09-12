@@ -682,3 +682,54 @@ summary
 -------------------------
 
 learning and evaluation
+
+gradient checks
+-compare analytic (calculated) gradient to numerical (actual) gradient
+-centered formula
+    df(x)/dx = (f(x + h) − f(x − h))/2h
+        -use 2h instead of 1 h because h tends to be really small number (too close to zero)
+        -have to evaluate loss function twice (more computationally expensive) but more precise
+-relative error
+    -need to scale error based on difference in scales between numerical and analytic gradient
+    ∣f′a−f′n∣ / max(∣f′a∣,∣f′n∣)
+    -compare ratio of differences to ratio of absolute values of both gradients
+    -error rates in practice:
+        -relative error > 1e-2 usually means the gradient is probably wrong
+        - 1e-2 > relative error > 1e-4 should make you feel uncomfortable
+        - 1e-4 > relative error is usually okay for objectives with kinks. But if there are no kinks (e.g. use of tanh
+            nonlinearities and softmax), then 1e-4 is too high.
+        - 1e-7 and less you should be happy
+     -deeper the network, higher the relative errors
+-double precision
+-stay around active range of floating point
+    -beware tiny numbers!
+-kinks
+    -kinks = non-differentiable parts of objective function
+        -ReLU, SVM loss, Maxout neurons, etc.
+        -instead of getting analytic gradient of 0, numerical gradient can be non-zero if h value high enough
+    -keep track of "winners" in max functions for forward pass, compare results for backpropagation
+        -if winner changes, then found kink, numerical gradient will not be exact
+    -can fix kinks by having fewer datapoints
+        -having fewer datapoints can make gradient check faster and more efficient
+-h
+    -step size!
+    -usually around 1e**-4 to 1e**-6
+-use realistic weight initializations for gradient checks
+    -beware pathological situations caused by unlucky intializations/combinations
+    -use short burn-in time, perform gradient check after loss goes down
+        -don't gradient check on first iteration
+            -can have weird edge cases
+-don't let regularization overwhelm data
+    -if loss function is data loss + regularization loss, regularization loss can overwhelm data loss
+        -gradients primarily coming from regularization term
+    -recommended to turn off regularization and check data loss alone first, then independently check regularization
+        -remove dataloss contribution to get regularization contribution
+        -could also increase regularization strength to create non-negligible effect in gradient check
+-turn off dropout/augmentations during gradient check
+    -if you don't turn them off could have huge errors in calculating numeric gradient
+    -however makes so you can't gradient check properly (need to make sure dropout is backpropagated properly)
+        -try forcing particular random seed before evaluating both f(x + h) and f(x - h), and when evaluating analytic
+        gradient
+-sample gradients to check
+    -don't need to check all of them
+    -don't sample at random, sample deliberately
