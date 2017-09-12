@@ -618,3 +618,67 @@ regularization
         p = 0.5
             -good default
 
+loss functions
+-data loss
+    -measures compatibility between prediction and ground truth
+        -average over data losses for every sample
+    L = 1/N∑iLi
+        N = number of training data
+-classification
+    -SVM
+        Li = ∑(j≠yi)max(0, fj − fyi + 1)
+        -squared hinge loss can have better performance
+            max(0, fj − fyi +1 )**2
+    -softmax classifier + cross-entropy loss
+        Li = −log(efyi / ∑jefj)
+        -hierarchical softmax
+            -better for large number of classes
+            -tree of labels, each label represented as path along tree
+                -softmax classifier trained at every node of tree to disambiguate left and right branch
+-attribute classification
+    -single item can have multiple labels, nonexclusive
+    -build binary classifier for each attribute
+        Li = ∑jmax(0, 1 − yijfj)
+            -the sum of all categories j and yij is +1 or -1 depending on if the i-th example has the j-th attribute
+            -score vector fj is positive if predicted to be present and negative otherwise
+            -loss accumulated if positive example has score < 1 or negative example has score > -1
+    -build logistic regression classifier for each attribute
+        P(y = 1∣x;w,b) = 1/(1+e**−(wTx+b)) = σ(wTx+b)
+        P(y = 0∣x;w,b) = 1 − P(y=1∣x;w,b)
+        -loss function maximizes log likelihood of probability of positive answer
+            Li = ∑(j)yij log(σ(fj)) + (1 − yij)log(1 − σ(fj))
+                -sigmoid function!
+            -gradient:
+                ∂Li/∂fj = yij − σ(fj)
+-regression
+    -predicting real valued quantities
+    -compute the loss between predicted quantity and true answer
+        -measure L2 squared norm or L1 norm of difference
+        -L2 squared norm:
+            Li = ∥f−yi∥22   # it's not a 22, they're stacked on each other
+            -gradient:
+                δij or sign(δij)
+                -gradient will either be directly proportional to difference in the error, or will be fixed and only
+                inherit the sign of the difference
+            -harder to optimize than softmax
+                -tbh might be easier to build binary classifiers if number of possible class values small/discrete enough
+        -L1 norm:
+            Li = ∥f−yi∥1 = ∑j∣fj−(yi)j∣
+                -∑j is sum over all dimensions of desired prediction, if there is more than one quantity predicted
+-structured prediction
+    -labels can be arbitrary structures (graphs, trees, other visualizations)
+    -structured SVM loss
+        -margin between correct structure yi and highest-scoring incorrect structure
+
+summary
+-preprocess by centering data (mean of zero), normalize scale to [-1, 1] for each dimension (feature)
+-initialize weights with guassian distribution
+    -standard deviation of √(2/n)
+        -n = num inputs to neuron
+        w = np.random.randn(n) * sqrt(2.0/n)
+-L2 regularization + dropout
+-batch normalization
+
+-------------------------
+
+learning and evaluation
