@@ -784,3 +784,82 @@ monitoring during learning process
     -noisy features can indicate unconverged network, improperly set learning rate, or very low weight regularization
     penalty
     -smooth features = good
+
+parameter updates
+-compute analytic gradient with backpropagation, then use gradients to perform parameter update
+-stochastic gradient descent (sgd)
+    -vanilla update
+        -change parameters along negative gradient direction
+            # Vanilla update
+            x += - learning_rate * dx
+        -learning rate = hyperparameter (fixed constant)
+            -if low enough, guaranteed to make non-negative process on loss function
+    -momentum update
+        -better convergence rates on deep networks
+        -initialize parameters with random numbers
+            -set a particle with zero initial velocity at some random location in gradient landscape
+                -optimization pushes particle along on landscape (like hills)
+                -force felt by particle is negative gradient of loss function
+                    -negative gradient is proportional to acceleration of particle
+                    -gradient directly influences velocity, which affects position of particle
+                        # Momentum update
+                        v = mu * v - learning_rate * dx # integrate velocity
+                        x += v # integrate position
+                    -v is variable initialized at zero
+                    -mu dampens velocity and reduces kinetic energy of system
+                        -hyperparameter mu is momentum (coefficient of friction)
+                        -makes particle stop moving at bottom of hill
+                        -usually cross validated at values [0.5, 0.9, 0.95, 0.99]
+                        -optimization can sometimes benefit from momentum schedules
+                            -increase momentum in later stages of learning (increase as epochs increase)
+        -parameter vector will build up velocity in any direction with consistent gradient
+    -Nesterov momentum
+        -similar to momentum update, stronger convergence for convex functions
+            -works slightly better than normal momentum
+        -if current parameter vector is at position x, we know momentum will affect vector by mu * v
+            -future approximations = x + mu * v = lookahead
+                -compute analytic gradient at lookahead point rather than x
+                    x_ahead = x + mu * v
+                    # evaluate dx_ahead (the gradient at x_ahead instead of at x)
+                    v = mu * v - learning_rate * dx_ahead
+                    x += v
+                -in practice want it to be more similar to vanilla sgd update
+                    v_prev = v # back this up
+                    v = mu * v - learning_rate * dx # velocity update stays the same
+                    x += -mu * v_prev + (1 + mu) * v # position update changes form
+-annealing the learning rate
+    -anneal = update learning rate over time
+    -step decay
+        -reduce learning rate by factor every few epochs
+            -example: halve the learning rate every 5 epochs
+            -example: reduce learning rate by 0.1 every 20 epochs
+            etc.
+        -in practice, watch validation error rate during training, reduce learning rate by constant (0.5) when validation
+        error rate stops improving
+    -exponential decay
+        α = α0e**−kt
+            -a0 and k are hyperparameters
+            -t = iteration number (or number of epochs)
+    -1/t decay
+        α = α0 / (1 + kt)
+    -step decay is usually prefered method
+        -ultimately better to have slower decay over longer training time
+-second order methods
+    -newton's method
+        x ← x − [Hf(x)]**−1 ∇f(x)
+            Hf(x) = Hessian matrix
+                -square matrix of second-order partial derivatives of function
+                -local curvature of loss function
+                    -more efficient update
+                    -multiplying by inverse Hessian makes optimization take larger steps in directions of
+                    shallow curvature and shorter steps in directions of steep curvature
+            ∇f(x) = gradient vector
+        -no hyperparameters to adjust
+        -impractical for deep learning applications because computing Hessian takes long fucking time and it's too big
+            -instead use quasi-Newton methods
+                -L-BFGS
+                    -uses information in gradients over time to compute approximation of Hessian matrix
+                        -doesn't compute full matrix so it's less computationally expensive/big af
+                    -needs to be computed over entire training set, which could still be huge and suck
+                        -not very many methods to use on smaller batches
+    -in practice, use SGD momentum methods because simpler and more easily scalable
