@@ -733,3 +733,54 @@ gradient checks
 -sample gradients to check
     -don't need to check all of them
     -don't sample at random, sample deliberately
+
+sanity checks
+-check data loss at/before initialization
+    -set regularization strength to zero
+    -if not getting expected loss then points to problem with initialization
+-increasing regularization strength = increase loss
+-overfit on tiny subset of data
+    -attempt to obtain zero loss on small subset (20 samples)
+        -set regularization to zero
+        -if cannot achieve 0 loss on small dataset, not worth persuing with larger set
+
+monitoring during learning process
+-loss function
+    -measured as loss per epoch
+        -loss on y, epoch on x; should go down
+    -low learning rate = linear improvement
+    -high learning rate = faster loss decay, but improvements stop sooner
+        -too much energy in optimization, parameters unable to settle
+        -very high learning rate = loss gets stupid high
+-train/val accuracy
+    -measured as accuracy per epoch
+        -accuracy on y, epoch on x; should go up
+    -gap between accuracy on training versus validation set indicates degree of overfitting
+    -large gap between val and train = strong overfitting
+        -increase regularization (stronger L2, increase dropout, etc)
+        -add more data
+    -small gap between val and train = little overfitting
+        -model capacity not high enough
+        -make model larger by increasing number of parameters
+-ratio of weights to updates
+    -track ratio of update magnitudes to value magnitudes
+        -use updates, not raw gradients
+            -vanilla stochastic gradient descent = gradient * learning rate
+    -evaluate and track for each set of parameters
+    -aim for 1e-3
+        # assume parameter vector W and its gradient vector dW
+        param_scale = np.linalg.norm(W.ravel())
+        update = -learning_rate*dW # simple SGD update
+        update_scale = np.linalg.norm(update.ravel())
+        W += update # the actual update
+        print update_scale / param_scale # want ~1e-3
+    -can track min or max, or compute and track norm of gradients + updates
+        -usually correlated, should give similar results
+-activation / gradient distribution per layer
+    -plot activation/gradient histograms for all layers of network
+        -if have strange distribution of neuron activations then it's messed up
+-first layer visualizations
+    -plot first layer features visually
+    -noisy features can indicate unconverged network, improperly set learning rate, or very low weight regularization
+    penalty
+    -smooth features = good
