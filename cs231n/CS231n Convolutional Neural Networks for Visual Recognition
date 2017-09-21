@@ -863,3 +863,47 @@ parameter updates
                     -needs to be computed over entire training set, which could still be huge and suck
                         -not very many methods to use on smaller batches
     -in practice, use SGD momentum methods because simpler and more easily scalable
+-per-parameter adaptive update methods
+    -instead of updating all parameters with the same learning rate, you can update them individually
+    -adagrad
+            # Assume the gradient dx and parameter vector x
+            cache += dx**2
+            x += - learning_rate * dx / (np.sqrt(cache) + eps)
+        -cache is the same size as the gradient
+            -per-parameter sum of squared updates
+            -normalize parameter update step element-wise
+            -weights with high gradients = learning rate reduced
+                -weights with small gradients/infrequent updates = effective learning rate increased
+        -eps = smoothing term
+            -usually between 1e-4 and 1e-8
+            -avoid division by zero
+        -can potentially update too aggressively early on and stop learning more quickly
+    -RMSprop
+        -supposed to be less aggressive and monotonic than adagrad
+        -uses moving average of squared gradients
+            cache = decay_rate * cache + (1 - decay_rate) * dx**2
+            x += - learning_rate * dx / (np.sqrt(cache) + eps)
+        -decay rate = hyperparameter
+            -[0.9, 0.99, 0.999] = typical values
+        -cache variable is leaky
+    -adam
+        -RMSprop + momentum
+            m = beta1*m + (1-beta1)*dx
+            v = beta2*v + (1-beta2)*(dx**2)
+            x += - learning_rate * m / (np.sqrt(v) + eps)
+        -m = smoothed version of gradient (dx is raw, noisy gradient)
+        -recommended values:
+            eps = 1e-8
+            beta1 = 0.9
+            beta2 = 0.999
+        -recommended algorithm to use!
+        -bias correction algorithm
+            -compensates for m and v being initialized at zero, accounts for burn in time
+            # t is your iteration counter going from 1 to infinity
+            m = beta1*m + (1-beta1)*dx
+            mt = m / (1-beta1**t)
+            v = beta2*v + (1-beta2)*(dx**2)
+            vt = v / (1-beta2**t)
+            x += - learning_rate * mt / (np.sqrt(vt) + eps)
+
+hyperparameter optimization
