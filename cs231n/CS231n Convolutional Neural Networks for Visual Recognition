@@ -907,3 +907,84 @@ parameter updates
             x += - learning_rate * mt / (np.sqrt(vt) + eps)
 
 hyperparameter optimization
+-initial learning rate, learning decay schedule (decay constant), regularization strength (L2, dropout)
+-implementation
+    -neural networks require a long time to train (fml)
+    -worker and master
+        -worker - continuously samples random hyperparameters and performs optimization
+            -get validation performance per epoch
+                -write to file as model checkpoint
+                    -log!
+                    -put val performance in filename
+        -master - launches or kills workers on computing cluster
+            -inspect model checkpoints
+            -plot training statistics
+-single validation set > cross validation
+    -better to have single, large validation set if possible
+    -can do cross validation with multiple folds, but due to training/testing time it's slow
+-hyperparameter ranges
+    -log scale
+        -ex: learning_rate = 10 ** uniform(-6, 1)
+            -take random number from uniform distribution and use as exponent for 10
+        -good for learning rate and regularization strength
+            -these parameters have multiplicative effects on data
+                -consider range of learning rate multiplied or divided by some value rather than adding/subtracting a constant
+    -dropout = use normal scale
+        ex: dropout = uniform(0,1)
+-random search > grid search
+    -random samples better than scheduled samples
+        -easier to implement
+-beward border values
+    -when sampling from a distribution (ex: uniform(-6, 1)), check to make sure final learning rate is not at interval edges
+    -might be more optimal hyperparameter beyond interval
+-coarse search ---> fine search
+    -start with sampling in coarse range (ex: [-6, 1]) then use narrower range for tuning
+        -coarse search best for first few epochs
+        -narrower range for 5 epochs
+        -final narrow range for rest of epochs
+-bayesian hyperparameter optimization
+    -libraries to use:
+        -spearmint
+        -SMAC
+        -Hyperopt
+    -in practice, still better to use random hyperparameter search
+
+evaluation
+model ensembles
+-train multiple independent models, average predictions at test time
+    -as num models increases, performance increases monotonically (diminishing returns)
+    -higher variety of models in ensemble = more dramatic improvements
+-same model, different initializations
+    -cross validation to get best hyperparameters
+    -train multiple models with best hyperparameters but different random initialization
+-top models from cross validation
+    -cross validation to get best hyperparameters
+        -pick best models (top 10) to create ensemble
+    -improves variety, risk of suboptimal models
+        -doesn't need additional cross validation or retraining
+-single model, different checkpoints
+    -best for expensive training
+    -take different checkpoints of network over time (epochs)
+    -not very variable, but works well
+-running average of training parameters
+    -maintain copy of network's weights in memory
+        -maintain exponentially decaying sum of previous weights
+    -average state of network over last several iterations
+    -smoothed
+        -usually has better validation error than unsmoothed
+-model ensembles can be slow during evaluation
+
+best practices
+-gradient check implementation with small batch of data
+-sanity check
+    -make sure good initial loss
+    -achieve 100% accuracy on small subset of data
+-monitor loss, training/validation accuracy, and magnitude of updates to parameter values
+    -1e-3
+    -conv nets should use first layer weights
+-update with sgd + nesterov momentum or adam
+-decay learning rate over epochs
+    -halve learning rate after fixed num epochs or when validation accuracy plateaus
+-sample hyperparameters with random search
+    -coarse (1-5 epochs) ---> fine
+-ensemble models can have extra performance
