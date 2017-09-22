@@ -988,3 +988,13 @@ best practices
 -sample hyperparameters with random search
     -coarse (1-5 epochs) ---> fine
 -ensemble models can have extra performance
+
+-------------------------
+
+Convolutional Neural Networks - CNNs / ConvNets
+
+-conv nets assume inputs are images!
+    -therefore encode certain properties directly into architecture
+    -forward pass more efficient and easier to implement
+    -fewer parameters in network
+
