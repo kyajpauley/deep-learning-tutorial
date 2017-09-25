@@ -935,7 +935,8 @@ hyperparameter optimization
     -random samples better than scheduled samples
         -easier to implement
 -beward border values
-    -when sampling from a distribution (ex: uniform(-6, 1)), check to make sure final learning rate is not at interval edges
+    -when sampling from a distribution (ex: uniform(-6, 1)), check to make sure final learning rate
+    is not at interval edges
     -might be more optimal hyperparameter beyond interval
 -coarse search ---> fine search
     -start with sampling in coarse range (ex: [-6, 1]) then use narrower range for tuning
@@ -993,8 +994,81 @@ best practices
 
 Convolutional Neural Networks - CNNs / ConvNets
 
+architecture
 -conv nets assume inputs are images!
     -therefore encode certain properties directly into architecture
     -forward pass more efficient and easier to implement
     -fewer parameters in network
+-normal neural networks don't work well for images
+    -image matrix is w * h (pixels) * 3 (rgb colorways)
+        -so a 32 * 32 pixel image has 3072 weights per neuron
+            -already big as hell, only gets bigger with larger image
+                -leads to overfitting
+            -can't really put a larger image in the same model because the scaling just isn't going to work well
+-3d neurons
+    -convnet layers arranged in 3 dimensions - width, height, depth
+    -neurons not fully connected between layers
+        -neurons in layer are only connected to small region of previous layer
+    -take 3d input, transfom to 3d output via differentiable function
 
+layers
+-input
+    -raw pixel values of image
+        -w, h, rgb
+-convolutional layer
+    -compute output (dot product) of connected neurons
+    -has parameters
+        -performs transformations between activations of input volume and weights/biases of neurons
+-reLU
+    -elementwise activation function
+    -no parameters - fixed function
+-pooling layer
+    -downsampling, reduces matrix dimensions
+    -no parameters - fixed function
+        -can have hyperparameters!
+-fully-connected layer
+    -compute class scores
+    -has parameters
+
+convolutional layer
+-parameters = learnable filters
+    -small spatially but extends to full depth of input volume
+-compute dot product between input and filter
+    -produce 2 dimensional activation map
+-local connectivity between neurons
+    -impractical to have neurons all interconnected
+    -each neuron connected to local region of input volume
+        -receptive field - spatial extent of neuron connectivity
+            -hyperparameter
+            -filter size
+        -depth of conv layer always = depth of input layer
+            -convDepth = inputDepth
+            -width and height do not have to be equal between layers
+-spatial arrangement
+    -size of output volume
+        -depth, stride, zero-padding
+            -depth - num filters
+                -also called fibre
+            -stride - how far to move filters at a time
+                -if stride = 1, move filter 1 pixel at a time
+                -if stride = 2, filter jumps 2 pixels at a time
+                    -produce smaller output volume spatially
+                    -stride = 3 or more is rare in practice
+            -zero padding - size of border of zeroes around input volume
+                -control the size of output volume
+                -can use to preserve spatial size of input volume so input size is same as output size
+    (W - F + 2P) / S + 1 = output layer size
+        -W = input volume size
+        -F = receptive field size
+        -S = stride
+        -P = zero padding
+        -ex: W = 7x7, F = 3x3, S = 1, P = 0 - output = 5x5 (7 - 3 + 2(0))/1 + 1 = 5
+            -if change S = 2, then output = 3x3 (7 - 3 + 2(0))/2 + 1 = 3
+    -zero padding
+        -set P to control the size of output layer
+        -in general, P = (F - 1)/2 when S = 1
+            -ensure input and output have the same size
+    -stride constraints
+        -output size has to be an integer (neurons must fit neatly and symmetrically across input)
+        -must set hyperparameters in order to make input and output sizes fit properly
+            -otherwise model will throw error or change the input to make it fit (which you don't want it to do!)
