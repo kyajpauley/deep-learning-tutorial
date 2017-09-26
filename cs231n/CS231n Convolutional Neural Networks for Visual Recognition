@@ -1183,3 +1183,39 @@ convert FC layer to conv layer
             output size = 1x1x4096
                 -only a single depth column fits across input volume, gives same result as FC
 FC --> conv conversion
+
+conv net architecture
+-conv networks = conv, pool, and FC layers
+    -relu activation function as layer - apply elementwise non-linearity
+
+layer patterns
+-most common:
+    INPUT -> [[CONV -> RELU]*N -> POOL?]*M -> [FC -> RELU]*K -> FC
+        0 <= N <= 3
+        M >= 0
+        0 <= K < 3
+        -repeat pattern of conv-relu followed by pool layers until image is smaller size
+        -once image is smaller spatially, convert to fully connected layers
+        -final fc layer has class scores
+    INPUT -> FC
+        N = M = K = 0
+    INPUT -> CONV -> RELU -> FC
+    INPUT -> [CONV -> RELU -> POOL]*2 -> FC -> RELU -> FC
+        -single conv layer between each pool layer
+    INPUT -> [CONV -> RELU -> CONV -> RELU -> POOL]*3 -> [FC -> RELU]*2 -> FC
+        -two conv layers before each pool layer
+        -better for larger/deeper networks
+    -better to have several smaller filter conv layers than one large conv layer
+-sizing patterns
+    -input layer = divisible by 2 many times
+        do multiples of 16: 32, 64, 96, 224, 384, 512
+    -conv layer = small filters (3x3, 5x5), S = 1
+        -add zero padding so that output of conv layer is same size as input
+            -if F = 3, P = 1
+            -if F = 5, P = 2
+            P = (F - 1)/2
+    -pool layer = max pooling, F = 2, S = 2
+        -discard 75% of activations from input volume
+        -sometimes see F = 3, S = 2
+    -want conv layers to preserve size of input, only pool layers used to reduce spatial size of volumes
+        -if don't use zero padding or S > 1, difficult to keep track of volume sizes across network
