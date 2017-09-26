@@ -1072,3 +1072,114 @@ convolutional layer
         -output size has to be an integer (neurons must fit neatly and symmetrically across input)
         -must set hyperparameters in order to make input and output sizes fit properly
             -otherwise model will throw error or change the input to make it fit (which you don't want it to do!)
+        -use zero padding to help alleviate challenges for setting stride
+-parameter sharing
+    -control number of parameters
+    -depth slice
+        -2 dimensional slice of depth
+            -if volume is 55x55x96, then have 96 slices of 55x55
+        -if parameters work at (x,y), they should also work at (x2, y2)
+        -constrain neurons in each depth slice to use same weights and bias
+            -since all neurons in same depth slice use same parameters, only have to calculate unique weights for each
+            slice
+        -during backpropagation add up computed gradients for each slice, update single set of weights per slice
+        -forward pass = convolution of neuron's weights with input volume
+            -sets of weights = filter (or kernel)
+    -locally connected layer
+        -if images have same centered structure (ex. faces), then different features need different spatial locations
+            -relax parameter sharing scheme
+    -ex. X = input
+        -depth column (fibre) at position (x,y) has activations X[x,y,:]
+        -depth slice (activation map) at position d has activations X[:,:,d]
+        -X shape = X.shape: (11,11,4)
+        -P = 0, F = 5, S = 2
+            -output volume = (11-5)/2 + 1= 4; 4x4 size = V
+            activation map:
+                V[0,0,0] = np.sum(X[:5,:5,:] * W0) + b0         * = element-wise multiplication between arrays
+                V[1,0,0] = np.sum(X[2:7,:5,:] * W0) + b0        w0 = weight vector, b0 = bias
+                V[2,0,0] = np.sum(X[4:9,:5,:] * W0) + b0            w0.shape = (5,5,4), use same weight and bias for slice
+                V[3,0,0] = np.sum(X[6:11,:5,:] * W0) + b0           width dimension increases by 2 due to stride
+            activation map 2:
+                V[0,0,1] = np.sum(X[:5,:5,:] * W1) + b1         second activation map uses w1 parameters
+                V[1,0,1] = np.sum(X[2:7,:5,:] * W1) + b1
+                V[2,0,1] = np.sum(X[4:9,:5,:] * W1) + b1
+                V[3,0,1] = np.sum(X[6:11,:5,:] * W1) + b1
+                V[0,1,1] = np.sum(X[:5,2:7,:] * W1) + b1        (example of going along y)
+                V[2,3,1] = np.sum(X[4:9,6:11,:] * W1) + b1      (or along both)
+-conv layer summary:
+    -input size = W1 * H1 * D1
+    -hyperparameters:
+        K = num filters
+        F = spatial extent
+        S = stride
+        P = zero padding
+    -output size = W2 * H2 * D2
+        W2 = (W1 - F + 2P)/S + 1
+        H2 = (H1 - F + 2P)/S + 1        same as W2, has to be symmetrical
+        D2 = K
+    -parameter sharing: F * F * D1 weights per filter
+        numWeights = (F * F * D1) * K
+        numBiases = K
+    -best practices:
+        F = 3, S = 1, P = 1
+
+pooling layer
+-goes between successive conv layers
+-reduce spatial size to reduce num parameters and computation in network
+-control overfitting
+-operate independently on each depth slice, resizes spatially using max operation
+    -most common:
+        filters = 2x2, S = 2
+            -stride along both width and height
+            -discard 75% of activations
+            -depth dimension unchanged
+            -take max across 4 numbers
+-pooling can do max pooling, average pooling, or L2 norm pooling
+-backpropagation
+    -route gradient to input with highest value in forward pass
+    -keep track of index of max activation (switches) during forward pass for efficient backpropagation
+-is pooling necessary?
+    -could have model with only conv layers (no pooling in between)
+        -reduce size of parameters by having larger S value in conv layer
+    -don't use pooling in training generative models
+        -variational autoencoders (VAE)
+        -generative adversarial networks (GAN)
+-pooling layer summary:
+    -input size = W1 * H1 * D1
+    -hyperparameters:
+        F = spatial extent
+        S = stride
+    -output size = W2 * H2 * D2
+        W2 = (W1 - F)/S + 1
+        H2 = (H1 - F)/S + 1
+        D2 = D1
+    -doesn't add any parameters, fixed function of input
+    -doesn't use zero padding
+    -usually: S = 2, F = 2
+        -sometimes F = 3, overlapping pooling
+        -bigger F sizes get rid of too many parameters
+
+normalization layer
+-no one really uses these in conv nets...
+
+fully-connected layer
+-neurons have full connections to all activations in previous layer
+    -same as normal neural networks
+-computed by matrix multiplication plus bias offset
+
+convert FC layer to conv layer
+-FC = fully connected to previous layer
+-conv = connected only to local region of previous layer
+    -many neurons share parameters
+-both FC and conv layers do dot product, so can convert between them
+    -conv --> FC
+        -FC matrix is mostly zeroes except for the blocks corresponding to the local connection
+            -weights in those blocks are equal due to parameter sharing
+    -FC --> conv
+        ex. K = 4096, input size = 7x7x512
+            conv attributes are
+            F = 7, P = 0, S = 1, K = 4096
+                -set filter size to be same as size of input volume (without the depth)
+            output size = 1x1x4096
+                -only a single depth column fits across input volume, gives same result as FC
+FC --> conv conversion
