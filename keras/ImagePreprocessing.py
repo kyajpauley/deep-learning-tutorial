@@ -1,3 +1,28 @@
+import keras
+from keras.preprocessing.image import ImageDataGenerator
+import numpy as np
+
+# image data generator
+keras.preprocessing.image.ImageDataGenerator(featurewise_center=False,
+                                             samplewise_center=False,
+                                             featurewise_std_normalization=False,
+                                             samplewise_std_normalization=False,
+                                             zca_whitening=False,
+                                             zca_epsilon=1e-6,
+                                             rotation_range=0.,
+                                             width_shift_range=0.,
+                                             height_shift_range=0.,
+                                             shear_range=0.,
+                                             zoom_range=0.,
+                                             channel_shift_range=0.,
+                                             fill_mode='nearest',
+                                             cval=0.,
+                                             horizontal_flip=False,
+                                             vertical_flip=False,
+                                             rescale=None,
+                                             preprocessing_function=None,
+                                             data_format=K.image_data_format())
+
 # example using .flow(x, y)
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 y_train = np_utils.to_categorical(y_train, num_classes)
