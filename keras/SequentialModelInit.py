@@ -5,7 +5,7 @@ from keras.layers import Dense, Activation
 model = Sequential([
     Dense(32, input_shape=(784,)),
     Activation('relu'),
-    Dense(10),
+    Dense(10),  # doesn't have input shape since isn't first layer
     Activation('softmax'),
 ])
 
@@ -15,6 +15,7 @@ model.add(Dense(32, input_dim=784))
 model.add(Activation('relu'))
 
 # input shape specification (following snippets are equivalent for 2d layers)
+# only for first layers! subsequent layers don't get this!
 model = Sequential()
 model.add(Dense(32, input_shape=(784,)))  # pass tuple of shape
 
