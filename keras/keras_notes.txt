@@ -3,3 +3,37 @@ keras
 -python 2.7-3.6
 -gpu and cpu
 -use with TensorFlow
+
+main model type in Keras = sequential model
+
+declare model:
+model = Sequential()
+
+add layers
+model.add(Dense(32, input_dim=784))
+model.add(Activation('relu'))
+
+specify input shape
+-pass input_shape argument to first layer
+    -shape tuple = tuple of integers or None
+        -if None, expect any positive integer
+        -batch dimension not included
+-dense 2d layer
+    -specify shape using input_dim
+-3d temporal layers support input_dim and input_length
+-batch size
+    -set fixed batch size with batch_size arg
+
+compilation
+-configure learning process before training
+-optimizer
+    -rmsprop or adagrad
+-loss function
+    -categorical_crossentropy
+    -mse
+-metrics
+    metrics=['accuracy']
+    -can also make custom metrics function
+
+training
+-fit function
