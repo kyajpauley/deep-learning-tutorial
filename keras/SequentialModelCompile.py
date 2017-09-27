@@ -23,6 +23,7 @@ import keras.backend as K
 
 
 def mean_pred(y_true, y_pred):
+    # custom metrics function! just call it in the metrics declaration
     return K.mean(y_pred)
 
 
