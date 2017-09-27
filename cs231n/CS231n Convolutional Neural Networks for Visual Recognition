@@ -1208,7 +1208,7 @@ layer patterns
     -better to have several smaller filter conv layers than one large conv layer
 -sizing patterns
     -input layer = divisible by 2 many times
-        do multiples of 16: 32, 64, 96, 224, 384, 512
+        do multiples of 16: 32, 64, 96, 224, 384, 512, 784
     -conv layer = small filters (3x3, 5x5), S = 1
         -add zero padding so that output of conv layer is same size as input
             -if F = 3, P = 1
